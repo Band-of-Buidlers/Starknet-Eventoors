@@ -18,6 +18,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
         start: u64,
         end: u64,
         location: ByteArray,
+        max_capacity: u256,
         metadata_uri: ByteArray,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
@@ -38,6 +39,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
         start_time: u64,
         end_time: u64,
         location: ByteArray,
+        max_capacity: u256,
         event_metadata_uri: ByteArray,
         owner: ContractAddress
     ) {
@@ -71,6 +73,10 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.location.read()
         }
 
+        fn event_max_capacity(self: @ContractState) -> u256 {
+            self.max_capacity.read()
+        }
+
         fn event_metadata_uri(self: @ContractState) -> ByteArray {
             self.metadata_uri.read()
         }
@@ -89,6 +95,12 @@ use contracts::starknet_event::interface::IStarknetEvent;
                 // +
                 // self.max_capacity is > self.registrations
 
+        }
+
+        fn increase_event_capacity(ref self: ContractState, new_capacity: u256) {
+            self.ownable.assert_only_owner();
+            assert!(new_capacity > self.event_max_capacity(), "new capacity must be greater than current value");
+            self.max_capacity.write(new_capacity);
         }
 
         fn check_in_attendee(ref self: ContractState, attendee: ContractAddress) {
