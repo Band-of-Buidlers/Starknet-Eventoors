@@ -22,8 +22,8 @@ use contracts::starknet_event::interface::IStarknetEvent;
         registration_count: u64,
         max_capacity: u64,
         metadata_uri: ByteArray,
-        // maybe add a checkin deadline time? Which we compare to the current get_block_timestamp??
-        registered: LegacyMap::<ContractAddress, u8>,
+        // maybe add a check_in deadline time? Which we compare to the current get_block_timestamp??
+        registered: LegacyMap::<ContractAddress, bool>,
         check_in: LegacyMap::<ContractAddress, bool>,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
@@ -91,6 +91,10 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.metadata_uri.read()
         }
 
+        fn is_registered(self: @ContractState) -> bool {
+            self.registered.read(get_caller_address())
+        }
+
         //
         // WRITE FUNCTIONS (Setters)
         //
@@ -106,10 +110,10 @@ use contracts::starknet_event::interface::IStarknetEvent;
 
             // Initial checks to make sure there is still space and that the person hasn't already registered
             assert!(self.registration_count.read() < self.max_capacity.read(), "This event is sold out!");
-            assert!(self.registered.read(get_caller_address()) == 0, "This user is already registered");
+            assert!(self.registered.read(get_caller_address()) == false, "This user is already registered");
 
             let registree_address = get_caller_address();
-            self.registered.write(registree_address, 1);
+            self.registered.write(registree_address, true);
             let current_count = self.registration_count.read();
             self.registration_count.write(current_count + 1);
         }
@@ -130,11 +134,5 @@ use contracts::starknet_event::interface::IStarknetEvent;
             // TODO: Then, update the `check_in` storage to true for the given attendee address here
             self.check_in.write(attendee, true);
         }
-
     }
-
-
-
-
-
 }

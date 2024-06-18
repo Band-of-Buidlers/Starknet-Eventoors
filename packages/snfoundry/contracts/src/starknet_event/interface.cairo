@@ -9,6 +9,7 @@ pub trait IStarknetEvent<TContractState> {
     fn event_end(self: @TContractState) -> u64;
     fn event_location(self: @TContractState) -> ByteArray;
     fn event_registration_count(self: @TContractState) -> u64;
+    fn is_registered(self: @TContractState) -> bool;
     fn event_max_capacity(self: @TContractState) -> u64;
     fn event_metadata_uri(self: @TContractState) -> ByteArray;
 
