@@ -1,2 +1,2 @@
-mod starknet_event;
 mod interface;
+mod starknet_event;

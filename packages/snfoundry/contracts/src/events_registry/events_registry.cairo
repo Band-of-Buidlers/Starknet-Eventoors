@@ -42,5 +42,4 @@ mod EventsRegistry {
             self.upgradeable._upgrade(new_class_hash);
         }
     }
-
 }
