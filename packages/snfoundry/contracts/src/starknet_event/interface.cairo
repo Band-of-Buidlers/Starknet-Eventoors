@@ -8,7 +8,8 @@ pub trait IStarknetEvent<TContractState> {
     fn event_start(self: @TContractState) -> u64;
     fn event_end(self: @TContractState) -> u64;
     fn event_location(self: @TContractState) -> ByteArray;
-    fn event_max_capacity(self: @TContractState) -> u256;
+    fn event_registration_count(self: @TContractState) -> u64;
+    fn event_max_capacity(self: @TContractState) -> u64;
     fn event_metadata_uri(self: @TContractState) -> ByteArray;
 
     // Setters
@@ -17,6 +18,6 @@ pub trait IStarknetEvent<TContractState> {
     fn register(ref self: TContractState);
 
     // for Event Owner only
-    fn increase_event_capacity(ref self: TContractState, new_capacity: u256);
+    fn increase_event_capacity(ref self: TContractState, new_capacity: u64);
     fn check_in_attendee(ref self: TContractState, attendee: ContractAddress);
 }
