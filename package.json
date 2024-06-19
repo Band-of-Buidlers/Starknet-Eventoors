@@ -32,6 +32,7 @@
     "prettier": "^3.2.5"
   },
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
     "postcss": "^8.4.38"
   }
 }

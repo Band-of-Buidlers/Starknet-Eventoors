@@ -7,6 +7,7 @@
 //     // fn example2(ref self: TContractState);
 // }
 
+// CID For each event
 
 #[starknet::contract]
 mod EventsRegistry {
@@ -101,7 +102,7 @@ mod EventsRegistry {
             let contract_address_salt: felt252 = self
                 .total_events()
                 .try_into()
-                .unwrap(); // I assume that `salt` needs to be different everytime this function is called
+                .unwrap(); // I assume that `salt` needs to be different everytime this function is called 
             let event_ID = self.total_events() + 1;
             let creator = get_caller_address();
             let deploy_from_zero: bool =

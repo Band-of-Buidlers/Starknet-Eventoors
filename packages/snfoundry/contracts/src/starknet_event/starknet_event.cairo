@@ -22,6 +22,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
         registration_count: u64,
         max_capacity: u64,
         metadata_uri: ByteArray,
+        CID: ByteArray,
         // maybe add a check_in deadline time? Which we compare to the current get_block_timestamp??
         registered: LegacyMap::<ContractAddress, bool>,
         check_in: LegacyMap::<ContractAddress, bool>,
@@ -40,16 +41,34 @@ use contracts::starknet_event::interface::IStarknetEvent;
     fn constructor(
         ref self: ContractState,
         event_ID: u256,
-        name: ByteArray,
+        name: Array<felt252>,
         start_time: u64,
         end_time: u64,
-        location: ByteArray,
+        location: Array<felt252>,
+        CID: Array<felt252>,
         registration_count: u64,
         max_capacity: u64,
-        event_metadata_uri: ByteArray,
+        event_metadata_uri: Array<felt252>,
         owner: ContractAddress
     ) {
         self.ownable.initializer(owner);
+        self.event_id.write(event_ID);
+        // convert felt array to bytearray
+        // //self.name.write(name);
+
+        let my_byte_arr = ByteArray {};
+        my_byte_arr.append_word(blablabla);
+
+        
+
+        self.start.write(start_time);
+        self.end.write(end_time);
+        //convert felt array to bytearray
+        self.location.write(location);
+        self.max_capacity.write(max_capacity);
+        // convert felt array to bytearray
+        self.metadata_uri.write(event_metadata_uri);
+        self.CID.write(CID);
     }
 
     #[abi(embed_v0)]
@@ -75,7 +94,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.end.read()
         }
 
-        fn event_location(self: @ContractState) -> ByteArray {
+        fn event_location(self: @ContractState) -> ByteArray{
             self.location.read()
         }
 
@@ -87,7 +106,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.max_capacity.read()
         }
 
-        fn event_metadata_uri(self: @ContractState) -> ByteArray {
+        fn event_metadata_uri(self: @ContractState) -> ByteArray{
             self.metadata_uri.read()
         }
 
@@ -135,4 +154,12 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.check_in.write(attendee, true);
         }
     }
+
+    // HELPER METHOD
+    fn convert_felts_array_to_ByteArray(array: Array<felt252>) {
+        if array.len() > 0 {
+            let temp
+        }
+    }
+
 }
