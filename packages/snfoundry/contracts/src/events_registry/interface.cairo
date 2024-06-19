@@ -5,8 +5,8 @@ pub trait IEventsRegistry<TContractState> {
     //? GETTER FUNCTIONS
     // fn get(self: @TContractState) -> u128; //? getter fn example
     fn total_events(self: @TContractState) -> u256;
-    fn address_of(self: @TContractState, event_id: u256) -> ContractAddress;
-    fn nber_of_events_published_by(self: @TContractState, user: ContractAddress) -> u256;
+    fn address_of_event(self: @TContractState, event_id: u256) -> ContractAddress;
+    fn nber_of_events_published_by_organizer(self: @TContractState, organizer: ContractAddress) -> u256;
     fn event_of_owner_by_index(
         self: @TContractState, owner: ContractAddress, event_index: u256
     ) -> ContractAddress;

@@ -19,7 +19,9 @@ mod EventsRegistry {
     use starknet::syscalls::deploy_syscall;
     use starknet::{ClassHash, ContractAddress};
     use starknet::{get_caller_address,};
-
+    
+    const STARKNET_EVENT_CLASS_HASH: felt252=0x034cde55489828626c67dc835d9fd51bbb5bdea7a8e54c9c76c57b98bec560c7;
+    
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
@@ -60,16 +62,20 @@ mod EventsRegistry {
         //
         // READ FUNCTIONS (Getters)
         //
+
+        // Total number of events available on the site
         fn total_events(self: @ContractState) -> u256 {
             self.total_events.read()
         }
 
-        fn address_of(self: @ContractState, event_id: u256) -> ContractAddress {
+        // Retrieves the address of an event
+        fn address_of_event(self: @ContractState, event_id: u256) -> ContractAddress {
             self.events_addresses.read(event_id)
         }
-
-        fn nber_of_events_published_by(self: @ContractState, user: ContractAddress) -> u256 {
-            self.users_totals.read(user)
+        
+        // Number of events an organizer has published using their deployed address
+        fn nber_of_events_published_by_organizer(self: @ContractState, organizer: ContractAddress) -> u256 {
+            self.users_totals.read(organizer)
         }
 
         fn event_of_owner_by_index(
@@ -77,7 +83,7 @@ mod EventsRegistry {
         ) -> ContractAddress {
             assert!(event_index > 0, "index cannot be 0 (first event_index = 1)");
             assert!(
-                event_index <= self.nber_of_events_published_by(owner), "event_index is too high"
+                event_index <= self.nber_of_events_published_by_organizer(owner), "event_index is too high"
             );
 
             self.users_events_mapping.read((owner, event_index))
@@ -91,7 +97,7 @@ mod EventsRegistry {
             start: u64, end: u64,
         // stake_amount: u256,
         ) -> ContractAddress {
-            let class_hash = EVENT_V01_FELT.try_into().unwrap();
+            let class_hash = STARKNET_EVENT_CLASS_HASH.try_into().unwrap();
             let contract_address_salt: felt252 = self
                 .total_events()
                 .try_into()
