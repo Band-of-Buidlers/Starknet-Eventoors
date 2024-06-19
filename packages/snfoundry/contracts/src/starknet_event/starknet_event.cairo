@@ -91,8 +91,8 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.metadata_uri.read()
         }
 
-        fn is_registered(self: @ContractState) -> bool {
-            self.registered.read(get_caller_address())
+        fn is_registered(self: @ContractState, account: ContractAddress) -> bool {
+            self.registered.read(account)
         }
 
         //
