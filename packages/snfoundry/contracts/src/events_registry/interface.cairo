@@ -14,8 +14,6 @@ pub trait IEventsRegistry<TContractState> {
     //? SETTER FUNCTIONS
     // fn set(ref self: TContractState, x: u128);//? setter fn example
     fn publish_new_event(
-        ref self: TContractState, name: ByteArray, // description: ByteArray,
-        start: u64, end: u64,
-    // stake_amount: u256
+        ref self: TContractState, name: ByteArray,
     ) -> ContractAddress;
 }
