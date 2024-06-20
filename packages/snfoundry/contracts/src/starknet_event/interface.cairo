@@ -11,12 +11,14 @@ pub trait IStarknetEvent<TContractState> {
     fn event_registration_count(self: @TContractState) -> u64;
     fn is_registered(self: @TContractState, account: ContractAddress) -> bool;
     fn event_max_capacity(self: @TContractState) -> u64;
+    fn amount_to_stake(self: @TContractState) -> u256;
     fn event_metadata_uri(self: @TContractState) -> ByteArray;
 
     // Setters
 
     // for Users
-    fn register(ref self: TContractState);
+    fn stake_to_register(ref self: TContractState);
+    
 
     // for Event Owner only
     fn increase_event_capacity(ref self: TContractState, new_capacity: u64);

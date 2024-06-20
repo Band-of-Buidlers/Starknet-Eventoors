@@ -34,8 +34,8 @@ mod EventsRegistry {
     struct Storage {
         total_events: u256,
         events_addresses: LegacyMap<u256, ContractAddress>,
-        users_totals: LegacyMap<ContractAddress, u256>,
-        users_events_mapping: LegacyMap<(ContractAddress, u256), ContractAddress>,
+        total_events_created_by: LegacyMap<ContractAddress, u256>,
+        event_created_by: LegacyMap<(ContractAddress, u256), ContractAddress>,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
@@ -75,7 +75,7 @@ mod EventsRegistry {
         
         // Number of events an organizer has published using their deployed address
         fn nber_of_events_published_by_organizer(self: @ContractState, organizer: ContractAddress) -> u256 {
-            self.users_totals.read(organizer)
+            self.total_events_created_by.read(organizer)
         }
 
         fn event_of_owner_by_index(
@@ -86,8 +86,16 @@ mod EventsRegistry {
                 event_index <= self.nber_of_events_published_by_organizer(owner), "event_index is too high"
             );
 
-            self.users_events_mapping.read((owner, event_index))
+            self.event_created_by.read((owner, event_index))
         }
+
+        // total nber of events a given user is registered to
+        // fn nber_of_events_registered_to(self: @ContractState,) {
+            //TODO
+        // }
+
+        // returns the address of the given event_index which caller is registered to
+        //TODO
 
         //
         // WRITE FUNCTIONS (Setters)

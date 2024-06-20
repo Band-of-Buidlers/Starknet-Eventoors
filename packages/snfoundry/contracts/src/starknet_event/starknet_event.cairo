@@ -1,6 +1,7 @@
 #[starknet::contract]
 mod StarknetEvent {
-    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait;
+    use core::starknet::event::EventEmitter;
+use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait;
 use contracts::starknet_event::interface::IStarknetEvent;
     use openzeppelin::access::ownable::OwnableComponent;
     use starknet::ContractAddress;
@@ -22,6 +23,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
         registration_count: u64,
         max_capacity: u64,
         metadata_uri: ByteArray,
+        unit_stake_value: u256,
         // maybe add a check_in deadline time? Which we compare to the current get_block_timestamp??
         registered: LegacyMap::<ContractAddress, bool>,
         check_in: LegacyMap::<ContractAddress, bool>,
@@ -32,8 +34,17 @@ use contracts::starknet_event::interface::IStarknetEvent;
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
+        UserRegistration: UserRegistration,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
+    }
+
+
+    #[derive(Drop, starknet::Event)]
+    struct UserRegistration {
+        #[key]
+        user: ContractAddress,
+        deposit: u256,
     }
 
     #[constructor]
@@ -47,6 +58,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
         registration_count: u64,
         max_capacity: u64,
         event_metadata_uri: ByteArray,
+        unit_stake_value: u256,
         owner: ContractAddress
     ) {
         self.ownable.initializer(owner);
@@ -91,6 +103,10 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.metadata_uri.read()
         }
 
+        fn amount_to_stake(self: @ContractState) -> u256 {
+            self.unit_stake_value.read()
+        }
+
         fn is_registered(self: @ContractState, account: ContractAddress) -> bool {
             self.registered.read(account)
         }
@@ -99,24 +115,34 @@ use contracts::starknet_event::interface::IStarknetEvent;
         // WRITE FUNCTIONS (Setters)
         //
 
-        fn register(ref self: ContractState) {
-            // TODO: First, create a `registered` LegacyMap in the contract's Storage
-            // TODO: Also create a Storage variable for an eventual max_capacity of the event
-            // TODO: Then, add a variable for the nber_of_registrations
-            // TODO: allow user to register to the event only if:
-            // they haven't already registered
-            // +
-            // self.max_capacity is > self.registrations
+        fn stake_to_register(ref self: ContractState) {
+                assert!(self.registration_count.read() < self.max_capacity.read(), "This event is sold out!");
+                assert!(self.registered.read(get_caller_address()) == false, "User is already registered to this event!");
 
-            // Initial checks to make sure there is still space and that the person hasn't already registered
-            assert!(self.registration_count.read() < self.max_capacity.read(), "This event is sold out!");
-            assert!(self.registered.read(get_caller_address()) == false, "This user is already registered");
+                let amount = self.amount_to_stake.read();
 
-            let registree_address = get_caller_address();
-            self.registered.write(registree_address, true);
-            let current_count = self.registration_count.read();
-            self.registration_count.write(current_count + 1);
+            self.emit(UserRegistration {user: get_caller_address(), deposit: amount};
         }
+
+
+        // fn register(ref self: ContractState) {
+        //     // TODO: First, create a `registered` LegacyMap in the contract's Storage
+        //     // TODO: Also create a Storage variable for an eventual max_capacity of the event
+        //     // TODO: Then, add a variable for the nber_of_registrations
+        //     // TODO: allow user to register to the event only if:
+        //     // they haven't already registered
+        //     // +
+        //     // self.max_capacity is > self.registrations
+
+        //     // Initial checks to make sure there is still space and that the person hasn't already registered
+        //     assert!(self.registration_count.read() < self.max_capacity.read(), "This event is sold out!");
+        //     assert!(self.registered.read(get_caller_address()) == false, "This user is already registered");
+
+        //     let registree_address = get_caller_address();
+        //     self.registered.write(registree_address, true);
+        //     let current_count = self.registration_count.read();
+        //     self.registration_count.write(current_count + 1);
+        // }
 
         fn increase_event_capacity(ref self: ContractState, new_capacity: u64) {
             self.ownable.assert_only_owner();
