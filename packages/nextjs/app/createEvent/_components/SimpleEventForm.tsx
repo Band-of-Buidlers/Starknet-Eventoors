@@ -61,6 +61,11 @@
 // export default SimpleEventForm;
 
 import { useState } from "react";
+// SN REACT needs specification of: Chain, Provider (RPC), and connector (Wallets)
+
+import  {sepolia }from "@starknet-react/chains";
+import { publicProvider } from "@starknet-react/core";
+import { braavos } from "@starknet-react/core";
 import { useScaffoldWriteContract } from "../../../hooks/scaffold-stark/useScaffoldWriteContract";
 
 const SimpleEventForm = () => {

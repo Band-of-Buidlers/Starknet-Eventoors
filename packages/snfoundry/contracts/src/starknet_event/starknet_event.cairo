@@ -40,34 +40,34 @@ use contracts::starknet_event::interface::IStarknetEvent;
     #[constructor]
     fn constructor(
         ref self: ContractState,
-        owner: ContractAddress,
         event_ID: u256,
-        name: ByteArray,
-        // start_time: u64,
-        // end_time: u64,
-        // location: Array<felt252>,
-        // CID: Array<felt252>,
-        // registration_count: u64,
-        // max_capacity: u64,
-        // event_metadata_uri: Array<felt252>,
+        name: Array<felt252>,
+        start_time: u64,
+        end_time: u64,
+        location: Array<felt252>,
+        CID: Array<felt252>,
+        registration_count: u64,
+        max_capacity: u64,
+        event_metadata_uri: Array<felt252>,
+        owner: ContractAddress
     ) {
         self.ownable.initializer(owner);
         self.event_id.write(event_ID);
-        self.name.write(name);
+        // convert felt array to bytearray
+        // //self.name.write(name);
 
-        // let my_byte_arr = ByteArray {};
-        // my_byte_arr.append_word(blablabla);
-
+        let my_byte_arr = ByteArray {};
+        my_byte_arr.append_word(blablabla);
         
 
-        // self.start.write(start_time);
-        // self.end.write(end_time);
-        // //convert felt array to bytearray
-        // self.location.write(location);
-        // self.max_capacity.write(max_capacity);
-        // // convert felt array to bytearray
-        // self.metadata_uri.write(event_metadata_uri);
-        // self.CID.write(CID);
+        self.start.write(start_time);
+        self.end.write(end_time);
+        //convert felt array to bytearray
+        self.location.write(location);
+        self.max_capacity.write(max_capacity);
+        // convert felt array to bytearray
+        self.metadata_uri.write(event_metadata_uri);
+        self.CID.write(CID);
     }
 
     #[abi(embed_v0)]
@@ -132,7 +132,6 @@ use contracts::starknet_event::interface::IStarknetEvent;
 
             let registree_address = get_caller_address();
             self.registered.write(registree_address, true);
-            
             let current_count = self.registration_count.read();
             self.registration_count.write(current_count + 1);
         }
@@ -156,10 +155,10 @@ use contracts::starknet_event::interface::IStarknetEvent;
     }
 
     // HELPER METHOD
-    // fn convert_felts_array_to_ByteArray(array: Array<felt252>) {
-    //     if array.len() > 0 {
-    //         let temp
-    //     }
-    // }
+    fn convert_felts_array_to_ByteArray(array: Array<felt252>) {
+        if array.len() > 0 {
+            let temp
+        }
+    }
 
 }
