@@ -7,7 +7,7 @@ const deployedContracts = {
   sepolia: {
     EventsRegistry: {
       address:
-        "0x02ab25b83fb475256b0a5ea4b858bfdd8cb4aaab6f95b3b7c1f8993e35b5dbd6",
+        "0x056b868ee758829f87481bb5132679f01f0eaca99a576dd6124a22bbcddbf3ad",
       abi: [
         {
           type: "impl",
@@ -119,8 +119,28 @@ const deployedContracts = {
               name: "publish_new_event",
               inputs: [
                 {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
                   name: "name",
                   type: "core::byte_array::ByteArray",
+                },
+                {
+                  name: "start_time",
+                  type: "core::integer::u64",
+                },
+                {
+                  name: "end_time",
+                  type: "core::integer::u64",
+                },
+                {
+                  name: "location",
+                  type: "core::byte_array::ByteArray",
+                },
+                {
+                  name: "max_capacity",
+                  type: "core::integer::u64",
                 },
               ],
               outputs: [

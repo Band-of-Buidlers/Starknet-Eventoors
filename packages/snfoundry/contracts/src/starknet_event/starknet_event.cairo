@@ -43,13 +43,13 @@ use contracts::starknet_event::interface::IStarknetEvent;
         owner: ContractAddress,
         event_ID: u256,
         name: ByteArray,
-        // start_time: u64,
-        // end_time: u64,
-        // location: Array<felt252>,
+        start_time: u64,
+        end_time: u64,
+        location: ByteArray,
         // CID: Array<felt252>,
-        // registration_count: u64,
-        // max_capacity: u64,
-        // event_metadata_uri: Array<felt252>,
+        registration_count: u64,
+        max_capacity: u64,
+        // event_metadata_uri: ByteArray,
     ) {
         self.ownable.initializer(owner);
         self.event_id.write(event_ID);

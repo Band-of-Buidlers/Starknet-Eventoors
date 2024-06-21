@@ -84,7 +84,15 @@ mod EventsRegistry {
         // WRITE FUNCTIONS (Setters)
         //
         fn publish_new_event(
-            ref self: ContractState, name: ByteArray,
+            ref self: ContractState,
+            owner: ContractAddress,
+            name: ByteArray,
+            start_time: u64,
+            end_time: u64,
+            location: ByteArray,
+            // CID: Array<felt252>,
+            max_capacity: u64,
+            // event_metadata_uri: ByteArray,
         ) -> ContractAddress {
             let class_hash: ClassHash = STARKNET_EVENT_CLASS_HASH.try_into().unwrap();
 
