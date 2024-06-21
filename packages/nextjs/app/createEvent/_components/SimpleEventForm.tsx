@@ -14,6 +14,7 @@ const SimpleEventForm = () => {
   const { writeAsync } = useScaffoldWriteContract({
     contractName: "EventsRegistry",
     functionName: "publish_new_event",
+    //TODO: SORT THE ARGUMENTS IN THE RIGHT ORDER BECAUSE THERE'S SOMETHING WRONG HERE => https://sepolia.voyager.online/contract/0x04d7867d3e6890Ca522C9a2E69B81fC3542582aefb8eB8a18B41A9D15e173fE4#readContract (Event contract deployed using our fronted)
     args: [
       eventName,
       address,
@@ -46,15 +47,20 @@ const SimpleEventForm = () => {
   };
 
   return (
-    <div
-      // style={{ padding: "20px" }}
-      className="flex flex-col items-center justify-center min-h-screen mt-12"
-    >
-      <h1>Create a New Event</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen mt-12 p-6">
+      <h1 className="text-2xl font-bold mb-6">Create a New Event</h1>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div>
-          <label htmlFor="event-name">Event Name: </label>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 bg-white p-6 rounded shadow-md w-full max-w-lg"
+      >
+        <div className="mb-4">
+          <label
+            htmlFor="event-name"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Event Name:
+          </label>
           <input
             type="text"
             id="event-name"
@@ -62,26 +68,54 @@ const SimpleEventForm = () => {
             onChange={(e) => setEventName(e.target.value)}
             maxLength={60}
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <small>{eventName.length}/60 characters</small>
+          <small className="text-gray-500">
+            {eventName.length}/60 characters
+          </small>
+        </div>
 
-          <label htmlFor="start-time">Start Time: </label>
+        <div className="mb-4">
+          <label
+            htmlFor="start-time"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Start Time:
+          </label>
           <input
             type="date"
             id="start-time"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <label htmlFor="end-time">End Time: </label>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="end-time"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            End Time:
+          </label>
           <input
             type="date"
             id="end-time"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <label htmlFor="event-name">Location: </label>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="event-location"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Location:
+          </label>
           <input
             type="text"
             id="Location"
@@ -89,35 +123,33 @@ const SimpleEventForm = () => {
             onChange={(e) => setL(e.target.value)}
             maxLength={60}
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <label htmlFor="event-name">Max Capacity For Event: </label>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="event-capacity"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Max Capacity For Event:
+          </label>
           <input
             type="number"
-            id="event-name"
+            id="event-capacity"
             value={maxCapacity}
             onChange={(e) => setMaxCapacity(e.target.value)}
             required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          {/* <label htmlFor="event-name">Event Name: </label>
-          <input
-            type="text"
-            id="event-name"
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-            maxLength={60}
-            required
-          />
-          <label htmlFor="event-name">Event Name: </label>
-          <input
-            type="text"
-            id="event-name"
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-            maxLength={60}
-            required
-          /> */}
         </div>
-        <button type="submit">Create Event</button>
+
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Create Event
+        </button>
       </form>
     </div>
   );

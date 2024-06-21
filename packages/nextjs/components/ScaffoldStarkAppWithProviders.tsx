@@ -10,6 +10,7 @@ import {
   braavos,
   useInjectedConnectors,
   starkscan,
+  voyager,
 } from "@starknet-react/core";
 import { Header } from "~~/components/Header";
 import { Footer } from "~~/components/Footer";
@@ -57,7 +58,7 @@ export const ScaffoldStarkAppWithProviders = ({
       chains={appChains}
       provider={provider}
       connectors={connectors}
-      explorer={starkscan}
+      explorer={voyager}
     >
       <ProgressBar />
       <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
