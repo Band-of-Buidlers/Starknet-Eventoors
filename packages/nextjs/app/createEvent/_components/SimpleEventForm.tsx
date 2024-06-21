@@ -1,6 +1,15 @@
+require("dotenv").config();
+
 import { useState } from "react";
 import { useScaffoldWriteContract } from "../../../hooks/scaffold-stark/useScaffoldWriteContract";
 import { useAccount } from "@starknet-react/core";
+import { pinataJSON } from "./Pinata";
+import { log } from "console";
+
+const { PINATA_API_KEY, PINATA_SECRET_KEY, PINATA_JWT } = process.env;
+
+const pinataSDK = require("@pinata/sdk");
+const pinata = new pinataSDK(PINATA_API_KEY, PINATA_SECRET_KEY);
 
 const SimpleEventForm = () => {
   const { account, address, status } = useAccount();
@@ -39,6 +48,26 @@ const SimpleEventForm = () => {
     try {
       const result = await writeAsync();
       console.log("Transaction successful:", result);
+    } catch (error) {
+      console.error("Transaction failed:", error);
+    }
+
+    try {
+      const eventMetadata = {
+        addrs: address,
+        name: eventName,
+        start: startTime,
+        end: endTime,
+        location: eventLocation,
+        capacity: maxCapacity,
+      };
+
+      const res = await pinata.pinJSONToIPFS(eventMetadata, undefined);
+      console.log("====================");
+      console.log(res);
+      console.log("====================");
+      // const result = await pinataJSON(eventMetadata);
+      // console.log("result of PINATA JSON CALL =", result);
     } catch (error) {
       console.error("Transaction failed:", error);
     }
