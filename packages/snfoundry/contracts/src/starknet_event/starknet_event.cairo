@@ -46,26 +46,17 @@ use contracts::starknet_event::interface::IStarknetEvent;
         start_time: u64,
         end_time: u64,
         location: ByteArray,
-        // CID: Array<felt252>,
-        registration_count: u64,
         max_capacity: u64,
+        // CID: Array<felt252>,
         // event_metadata_uri: ByteArray,
     ) {
         self.ownable.initializer(owner);
         self.event_id.write(event_ID);
         self.name.write(name);
-
-        // let my_byte_arr = ByteArray {};
-        // my_byte_arr.append_word(blablabla);
-
-        
-
-        // self.start.write(start_time);
-        // self.end.write(end_time);
-        // //convert felt array to bytearray
-        // self.location.write(location);
-        // self.max_capacity.write(max_capacity);
-        // // convert felt array to bytearray
+        self.start.write(start_time);
+        self.end.write(end_time);
+        self.location.write(location);
+        self.max_capacity.write(max_capacity);
         // self.metadata_uri.write(event_metadata_uri);
         // self.CID.write(CID);
     }

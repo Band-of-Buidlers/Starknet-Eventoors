@@ -10,7 +10,7 @@ mod EventsRegistry {
     use starknet::{get_caller_address,};
     use core::traits::TryInto;
     
-    const STARKNET_EVENT_CLASS_HASH: felt252 = 0x0757e028681e26c6107007bcd07d0787a7da4b71ba82dbed0b4690c6060967a5;
+    const STARKNET_EVENT_CLASS_HASH: felt252 = 0x0294637156f038edb584c84137f659a1c513764890c231b785f3548a03065fc0;
     
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
@@ -112,8 +112,11 @@ mod EventsRegistry {
             calldata_arr.append_serde(event_ID);
             calldata_arr.append_serde(name);
             // calldata_arr.append_serde(description);
-            // calldata_arr.append_serde(start);
-            // calldata_arr.append_serde(end);
+            calldata_arr.append_serde(start_time);
+            calldata_arr.append_serde(end_time);
+            calldata_arr.append_serde(location);
+            calldata_arr.append_serde(max_capacity);
+            
             let calldata: Span<felt252> = calldata_arr.span();
 
             // deploying the contract and creating a variable = its contract address

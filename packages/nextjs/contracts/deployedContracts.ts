@@ -7,7 +7,7 @@ const deployedContracts = {
   sepolia: {
     EventsRegistry: {
       address:
-        "0x056b868ee758829f87481bb5132679f01f0eaca99a576dd6124a22bbcddbf3ad",
+        "0x0052ccb30ee527d1499e04c567d633db376255ece4bbe8f7a446364951def406",
       abi: [
         {
           type: "impl",

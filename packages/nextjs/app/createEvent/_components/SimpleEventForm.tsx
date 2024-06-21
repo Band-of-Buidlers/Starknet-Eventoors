@@ -7,20 +7,18 @@ const SimpleEventForm = () => {
   const [eventName, setEventName] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  // const
-  const [L, setL] = useState("");
+  const [eventLocation, setEventLocation] = useState("");
   const [maxCapacity, setMaxCapacity] = useState(0);
 
   const { writeAsync } = useScaffoldWriteContract({
     contractName: "EventsRegistry",
     functionName: "publish_new_event",
-    //TODO: SORT THE ARGUMENTS IN THE RIGHT ORDER BECAUSE THERE'S SOMETHING WRONG HERE => https://sepolia.voyager.online/contract/0x04d7867d3e6890Ca522C9a2E69B81fC3542582aefb8eB8a18B41A9D15e173fE4#readContract (Event contract deployed using our fronted)
     args: [
-      eventName,
       address,
+      eventName,
       Date.parse(startTime) / 1000,
-      Date.parse(endTime),
-      L,
+      Date.parse(endTime) / 1000,
+      eventLocation,
       maxCapacity,
     ],
     // options: { gas: 100000 },
@@ -35,8 +33,8 @@ const SimpleEventForm = () => {
     console.log("startTime type =", typeof startTime);
     console.log("startTime =", startTime);
 
-    const date = new Date(startTime);
-    const start_in_sec = date.toLocaleDateString();
+    // const date = new Date(startTime);
+    // const start_in_sec = date.toLocaleDateString();
 
     try {
       const result = await writeAsync();
@@ -119,8 +117,8 @@ const SimpleEventForm = () => {
           <input
             type="text"
             id="Location"
-            value={L}
-            onChange={(e) => setL(e.target.value)}
+            value={eventLocation}
+            onChange={(e) => setEventLocation(e.target.value)}
             maxLength={60}
             required
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -138,7 +136,8 @@ const SimpleEventForm = () => {
             type="number"
             id="event-capacity"
             value={maxCapacity}
-            onChange={(e) => setMaxCapacity(e.target.value)}
+            // onChange={(e) => setMaxCapacity(BigInt(e.target.value))}
+            onChange={(e) => setMaxCapacity(Number(e.target.value))}
             required
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
