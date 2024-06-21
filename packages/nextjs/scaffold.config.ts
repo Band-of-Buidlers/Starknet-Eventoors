@@ -17,7 +17,7 @@ const scaffoldConfig = {
   // it has no effect if you only target the local network (default is 30_000)
   pollingInterval: 30_000,
   /**
-   * Auto connect:
+   * Auto connect: //! set to "true" by default!
    * 1. If the user was connected into a wallet before, on page reload reconnect automatically
    * 2. If user is not connected to any wallet:  On reload, connect to burner wallet if burnerWallet.enabled is true && burnerWallet.onlyLocal is false
    */

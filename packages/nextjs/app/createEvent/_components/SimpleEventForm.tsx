@@ -61,29 +61,34 @@
 // export default SimpleEventForm;
 
 import { useState } from "react";
-// SN REACT needs specification of: Chain, Provider (RPC), and connector (Wallets)
-
-import  {sepolia }from "@starknet-react/chains";
-import { publicProvider } from "@starknet-react/core";
-import { braavos } from "@starknet-react/core";
 import { useScaffoldWriteContract } from "../../../hooks/scaffold-stark/useScaffoldWriteContract";
 
 const SimpleEventForm = () => {
   const [eventName, setEventName] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Event Name:", eventName);
-    // You can add more logic here if needed
-  };
-
   const { writeAsync } = useScaffoldWriteContract({
-    //TODO: either use the deploy script with our own contracts so that Scaffold Stark makes them usable for its hooks, or use starknet react hook instead of the current Scaffold stark hook
+    // TODO:
+    // maybe either use the deploy script with our own contracts
+    // so that Scaffold Stark makes them usable for its hooks,
+    // or use starknet react hook instead of the current Scaffold stark hook?
     contractName: "EventsRegistry",
     functionName: "publish_new_event",
-    args: [eventOwner, eventName],
+    args: [eventName],
     // options: { gas: 100000 },
   });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Event Name:", eventName);
+    console.log("type of eventName =", typeof eventName);
+    console.log("eventName.length =", eventName.length);
+    try {
+      const result = await writeAsync();
+      console.log("Transaction successful:", result);
+    } catch (error) {
+      console.error("Transaction failed:", error);
+    }
+  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -96,8 +101,10 @@ const SimpleEventForm = () => {
             id="event-name"
             value={eventName}
             onChange={(e) => setEventName(e.target.value)}
+            maxLength={60}
             required
           />
+          <small>{eventName.length}/60 characters</small>
         </div>
         <button type="submit">Create Event</button>
       </form>
