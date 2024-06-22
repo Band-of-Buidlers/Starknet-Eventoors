@@ -22,6 +22,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
         registration_count: u64,
         max_capacity: u64,
         metadata_uri: ByteArray,
+        CID: ByteArray,
         // maybe add a check_in deadline time? Which we compare to the current get_block_timestamp??
         registered: LegacyMap::<ContractAddress, bool>,
         check_in: LegacyMap::<ContractAddress, bool>,
@@ -39,17 +40,25 @@ use contracts::starknet_event::interface::IStarknetEvent;
     #[constructor]
     fn constructor(
         ref self: ContractState,
+        owner: ContractAddress,
         event_ID: u256,
         name: ByteArray,
         start_time: u64,
         end_time: u64,
         location: ByteArray,
-        registration_count: u64,
         max_capacity: u64,
-        event_metadata_uri: ByteArray,
-        owner: ContractAddress
+        // CID: Array<felt252>,
+        // event_metadata_uri: ByteArray,
     ) {
         self.ownable.initializer(owner);
+        self.event_id.write(event_ID);
+        self.name.write(name);
+        self.start.write(start_time);
+        self.end.write(end_time);
+        self.location.write(location);
+        self.max_capacity.write(max_capacity);
+        // self.metadata_uri.write(event_metadata_uri);
+        // self.CID.write(CID);
     }
 
     #[abi(embed_v0)]
@@ -75,7 +84,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.end.read()
         }
 
-        fn event_location(self: @ContractState) -> ByteArray {
+        fn event_location(self: @ContractState) -> ByteArray{
             self.location.read()
         }
 
@@ -87,12 +96,12 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.max_capacity.read()
         }
 
-        fn event_metadata_uri(self: @ContractState) -> ByteArray {
+        fn event_metadata_uri(self: @ContractState) -> ByteArray{
             self.metadata_uri.read()
         }
 
-        fn is_registered(self: @ContractState) -> bool {
-            self.registered.read(get_caller_address())
+        fn is_registered(self: @ContractState, account: ContractAddress) -> bool {
+            self.registered.read(account)
         }
 
         //
@@ -114,6 +123,7 @@ use contracts::starknet_event::interface::IStarknetEvent;
 
             let registree_address = get_caller_address();
             self.registered.write(registree_address, true);
+            
             let current_count = self.registration_count.read();
             self.registration_count.write(current_count + 1);
         }
@@ -135,4 +145,12 @@ use contracts::starknet_event::interface::IStarknetEvent;
             self.check_in.write(attendee, true);
         }
     }
+
+    // HELPER METHOD
+    // fn convert_felts_array_to_ByteArray(array: Array<felt252>) {
+    //     if array.len() > 0 {
+    //         let temp
+    //     }
+    // }
+
 }

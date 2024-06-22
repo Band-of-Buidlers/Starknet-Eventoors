@@ -5,14 +5,29 @@
 
 const deployedContracts = {
   sepolia: {
-    YourContract: {
+    EventsRegistry: {
       address:
-        "0x04080e5aeafee026edbce4b6bd90f5c998bb42f67372acace0fbbe6dc71f742e",
+        "0x0052ccb30ee527d1499e04c567d633db376255ece4bbe8f7a446364951def406",
       abi: [
         {
           type: "impl",
-          name: "YourContractImpl",
-          interface_name: "contracts::YourContract::IYourContract",
+          name: "EventsRegistryImpl",
+          interface_name:
+            "contracts::events_registry::interface::IEventsRegistry",
+        },
+        {
+          type: "struct",
+          name: "core::integer::u256",
+          members: [
+            {
+              name: "low",
+              type: "core::integer::u128",
+            },
+            {
+              name: "high",
+              type: "core::integer::u128",
+            },
+          ],
         },
         {
           type: "struct",
@@ -33,81 +48,130 @@ const deployedContracts = {
           ],
         },
         {
-          type: "struct",
-          name: "core::integer::u256",
-          members: [
-            {
-              name: "low",
-              type: "core::integer::u128",
-            },
-            {
-              name: "high",
-              type: "core::integer::u128",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
           type: "interface",
-          name: "contracts::YourContract::IYourContract",
+          name: "contracts::events_registry::interface::IEventsRegistry",
           items: [
             {
               type: "function",
-              name: "gretting",
+              name: "total_events",
               inputs: [],
               outputs: [
                 {
-                  type: "core::byte_array::ByteArray",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "set_gretting",
-              inputs: [
-                {
-                  name: "new_greeting",
-                  type: "core::byte_array::ByteArray",
-                },
-                {
-                  name: "amount_eth",
                   type: "core::integer::u256",
                 },
               ],
-              outputs: [],
-              state_mutability: "external",
+              state_mutability: "view",
             },
             {
               type: "function",
-              name: "withdraw",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "premium",
-              inputs: [],
+              name: "address_of_event",
+              inputs: [
+                {
+                  name: "event_id",
+                  type: "core::integer::u256",
+                },
+              ],
               outputs: [
                 {
-                  type: "core::bool",
+                  type: "core::starknet::contract_address::ContractAddress",
                 },
               ],
               state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "nber_of_events_published_by_organizer",
+              inputs: [
+                {
+                  name: "organizer",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "event_of_owner_by_index",
+              inputs: [
+                {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "event_index",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "publish_new_event",
+              inputs: [
+                {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "name",
+                  type: "core::byte_array::ByteArray",
+                },
+                {
+                  name: "start_time",
+                  type: "core::integer::u64",
+                },
+                {
+                  name: "end_time",
+                  type: "core::integer::u64",
+                },
+                {
+                  name: "location",
+                  type: "core::byte_array::ByteArray",
+                },
+                {
+                  name: "max_capacity",
+                  type: "core::integer::u64",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "external",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "UpgradeableImpl",
+          interface_name: "openzeppelin::upgrades::interface::IUpgradeable",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin::upgrades::interface::IUpgradeable",
+          items: [
+            {
+              type: "function",
+              name: "upgrade",
+              inputs: [
+                {
+                  name: "new_class_hash",
+                  type: "core::starknet::class_hash::ClassHash",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
             },
           ],
         },
@@ -215,34 +279,31 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "contracts::YourContract::YourContract::GreetingChanged",
+          name: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Upgraded",
           kind: "struct",
           members: [
             {
-              name: "greeting_setter",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_greeting",
-              type: "core::byte_array::ByteArray",
-              kind: "key",
-            },
-            {
-              name: "premium",
-              type: "core::bool",
-              kind: "data",
-            },
-            {
-              name: "value",
-              type: "core::integer::u256",
+              name: "class_hash",
+              type: "core::starknet::class_hash::ClassHash",
               kind: "data",
             },
           ],
         },
         {
           type: "event",
-          name: "contracts::YourContract::YourContract::Event",
+          name: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "Upgraded",
+              type: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Upgraded",
+              kind: "nested",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::events_registry::events_registry::EventsRegistry::Event",
           kind: "enum",
           variants: [
             {
@@ -251,9 +312,9 @@ const deployedContracts = {
               kind: "flat",
             },
             {
-              name: "GreetingChanged",
-              type: "contracts::YourContract::YourContract::GreetingChanged",
-              kind: "nested",
+              name: "UpgradeableEvent",
+              type: "openzeppelin::upgrades::upgradeable::UpgradeableComponent::Event",
+              kind: "flat",
             },
           ],
         },
