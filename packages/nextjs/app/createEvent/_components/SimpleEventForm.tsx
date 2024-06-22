@@ -5,6 +5,7 @@ import { useAccount } from "@starknet-react/core";
 const SimpleEventForm = () => {
   const { account, address, status } = useAccount();
   const [eventName, setEventName] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [eventLocation, setEventLocation] = useState("");
@@ -24,21 +25,73 @@ const SimpleEventForm = () => {
     // options: { gas: 100000 },
   });
 
+  const uploadEventMetadata = async (eventMetadata) => {
+    console.log("gateway =", process.env.NEXT_PUBLIC_GATEWAY_URL);
+    console.log("gateway =", process.env.NEXT_PUBLIC_PINATA_JWT);
+
+    const pinataSDK = require("@pinata/sdk");
+    const pinata = new pinataSDK(process.env.NEXT_PUBLIC_PINATA_JWT);
+
+    pinata
+      .testAuthentication()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    const options = {
+      pinataMetadata: {
+        name: `${eventName} - event created on Starknet Eventoors`,
+        // name: `Event #${event_id} - Starknet Eventoors`, //!need to make `fn publish_new_event()` return it!
+      },
+      pinataOptions: {
+        cidVersion: 0,
+      },
+    };
+
+    pinata
+      .pinJSONToIPFS(eventMetadata, options)
+      .then((result) => {
+        console.log("pinata result =", result);
+      })
+      .catch((err) => {
+        console.log("pinata error =", err);
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Event Name:", eventName);
-    console.log("type of eventName =", typeof eventName);
-    console.log("eventName.length =", eventName.length);
-    console.log("logged in user address =", address);
-    console.log("startTime type =", typeof startTime);
-    console.log("startTime =", startTime);
+    // console.log("Event Name:", eventName);
+    // console.log("type of eventName =", typeof eventName);
+    // console.log("eventName.length =", eventName.length);
+    // console.log("logged in user address =", address);
+    // console.log("startTime type =", typeof startTime);
+    // console.log("startTime =", startTime);
 
-    // const date = new Date(startTime);
-    // const start_in_sec = date.toLocaleDateString();
+    // create a JS Object compiling all static details about the event
+    const eventMetadata = {
+      // event_ID: //! needs to be added (so, first, I need to make `fn publish_new_event()` return it!)
+      name: eventName,
+      // organized_by: eventCreator, //! (I need to make the form ask the creator of the event their name in a string format first - there's no point storing a contract address in the metadata)
+      description: eventDescription,
+      start_date: startTime,
+      end_date: endTime,
+      location: eventLocation,
+      capacity: maxCapacity,
+      // token_to_stake: tokenToStake, // to be added in the form later
+      // amount_to_stake: amountToStake, // to be added in the form later
+    };
 
     try {
+      // first deploy a new event contract via a call to
+      // `fn publish_new_event()` from EventsRegistry contract
       const result = await writeAsync();
       console.log("Transaction successful:", result);
+
+      // then, post the event's metadata on IPFS
+      uploadEventMetadata(eventMetadata);
     } catch (error) {
       console.error("Transaction failed:", error);
     }
@@ -70,6 +123,27 @@ const SimpleEventForm = () => {
           />
           <small className="text-gray-500">
             {eventName.length}/60 characters
+          </small>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="event-name"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Event Description:
+          </label>
+          <input
+            type="text"
+            id="event-name"
+            value={eventDescription}
+            onChange={(e) => setEventDescription(e.target.value)}
+            maxLength={60}
+            required
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          <small className="text-gray-500">
+            {eventDescription.length}/480 characters
           </small>
         </div>
 
